@@ -1,19 +1,21 @@
 {
-  "name": "standard-notes-editor-template-cra-typescript",
-  "version": "0.1.0",
-  "description": "Template for building editors for Standard Notes using Create React App and TypeScript",
+  "name": "sn-tldraw",
+  "version": "0.0.1",
+  "description": "Editor leveraging tldraw build with React and TypeScript",
   "keywords": [
     "Standard Notes",
-    "Standard Notes Extensions"
+    "Standard Notes Extensions",
+    "tldraw",
+    "Editor"
   ],
   "private": true,
   "license": "AGPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "https://github.com/standardnotes/editor-template-cra-typescript.git"
+    "url": "https://github.com/valafar741/sn-tldraw.git"
   },
   "bugs": {
-    "url": "https://github.com/standardnotes/editor-template-cra-typescript/issues"
+    "url": "https://github.com/valafar741/sn-tldraw/issues"
   },
   "sn": {
     "main": "build/index.html"
