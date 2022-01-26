@@ -1,0 +1,13 @@
+{
+  "identifier": "org.valafar741.sn-tldraw",
+  "name": "TLDraw Editor",
+  "content_type": "SN|Component",
+  "area": "editor-editor",
+  "version": "0.0.1",
+  "description": "Editor leveraging tldraw build with React and TypeScript",
+  "url": "https://std-note.sprits.io/extensions/sn-tldraw",
+  "download_url": "https://github.com/valafar741/sn-tldraw/archive/refs/tags/v0.0.1.zip",
+  "latest_url": "https://std-note.sprits.io/extensions/sn-tldraw/ext.json",
+  "marketing_url": "https://github.com/valafar741/sn-tldraw",
+  "thumbnail_url": "https://std-note.sprits.io/extensions/sn-tldraw/card-repo.png"
+}
