@@ -105,7 +105,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
   };
 
   getDocument = (text: string): TDDocument => {
-    console.log('Text: ', JSON.parse(text));
+    console.log('Text: ', text);
     if (!text) {
       return InitState.document;
     }
@@ -147,7 +147,6 @@ export default class Editor extends React.Component<{}, EditorInterface> {
           showZoom={true}
           darkMode={true}
           onChange={this.handleChange}
-          // document={JSON.parse(text)}
           document={this.getDocument(text)}
         />
       </div>
