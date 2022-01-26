@@ -13,6 +13,8 @@ export enum HtmlClassName {
   textarea = 'sk-input contrast textarea',
 }
 
+export const TLDrawContentDescription = 'tldraw content \n';
+
 export interface EditorInterface {
   printUrl: boolean;
   text: string;
@@ -47,6 +49,8 @@ export default class Editor extends React.Component<{}, EditorInterface> {
       getElementsBySelector: () => [],
     });
 
+    // TODO: Patch with first line description.
+
     this.editorKit = new EditorKit({
       delegate: delegate,
       mode: 'plaintext',
@@ -54,24 +58,27 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     });
   };
 
-  handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const target = event.target;
-    const value = target.value;
-    this.saveText(value);
-  };
-
   handleChange = (state: TldrawApp, reason: string | undefined): void => {
     // console.log(state, reason);
-    if (reason?.startsWith('session:complete')) {
-      this.saveText(JSON.stringify(state.document));
-      console.log(reason);
+    // console.log(reason);
+    // [Resolved] Bug here: Text on sticky notes not saved if
+    // you move away from the note / page, unless
+    // session:complete is fired by some other action
+
+    const triggerSaveCommands = ['session:complete', 'updated_shapes'];
+
+    if (reason && triggerSaveCommands.includes(reason)) {
+      this.saveText(TLDrawContentDescription + JSON.stringify(state.document));
+      // console.log(reason);
     }
   };
 
   saveText = (text: string) => {
     this.saveNote(text);
 
-    // State managed within TLDRAW App, only need to load state on start up
+    /** State managed within tldraw app, so we only need to
+     * load state on start up, not after every change
+     */
     // this.setState({
     //   text: text,
     // });
@@ -105,14 +112,16 @@ export default class Editor extends React.Component<{}, EditorInterface> {
   };
 
   getDocument = (text: string): TDDocument => {
-    console.log('Text: ', text);
-
     if (!text) {
       return InitState.document;
     }
 
     let document: TDDocument = InitState.document;
     try {
+      /** Strip description from text on initial load */
+      // if (text.includes(TLDrawContentDescription)) {
+      text = text.substring(text.indexOf('{'));
+      // }
       document = JSON.parse(text);
     } catch {
       document = InitState.document;
@@ -126,27 +135,11 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     return (
       <div
         className={
-          HtmlElementId.snComponent +
-          (this.state.printUrl ? ' print-url' : '') +
-          ' tldraw'
+          HtmlElementId.snComponent + (this.state.printUrl ? ' print-url' : '')
         }
         id={HtmlElementId.snComponent}
         tabIndex={0}
       >
-        {/* <textarea
-          id={HtmlElementId.textarea}
-          name="text"
-          className={'sk-input contrast textarea'}
-          placeholder="Type here. Text in this textarea is automatically saved in Standard Notes"
-          rows={10}
-          spellCheck="true"
-          value={text}
-          onBlur={this.onBlur}
-          onChange={this.handleInputChange}
-          onFocus={this.onFocus}
-          onKeyDown={this.onKeyDown}
-          onKeyUp={this.onKeyUp}
-        /> */}
         <Tldraw
           showUI={true}
           showMenu={true}
