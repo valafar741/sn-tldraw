@@ -106,10 +106,19 @@ export default class Editor extends React.Component<{}, EditorInterface> {
 
   getDocument = (text: string): TDDocument => {
     console.log('Text: ', text);
-    // if (!text) {
-    return InitState.document;
-    // }
-    // return JSON.parse(text) as TDDocument;
+
+    if (!text) {
+      return InitState.document;
+    }
+
+    let document: TDDocument = InitState.document;
+    try {
+      document = JSON.parse(text);
+    } catch {
+      document = InitState.document;
+    }
+
+    return document as TDDocument;
   };
 
   render() {
