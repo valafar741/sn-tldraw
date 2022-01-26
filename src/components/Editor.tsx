@@ -1,5 +1,7 @@
 import React from 'react';
 import { EditorKit, EditorKitDelegate } from 'sn-editor-kit';
+import { Tldraw, TldrawApp, TDDocument } from '@tldraw/tldraw';
+import * as InitState from './initial-state.json';
 
 export enum HtmlElementId {
   snComponent = 'sn-component',
@@ -18,7 +20,7 @@ export interface EditorInterface {
 
 const initialState = {
   printUrl: false,
-  text: '',
+  text: JSON.stringify(InitState.document),
 };
 
 let keyMap = new Map();
@@ -58,11 +60,21 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     this.saveText(value);
   };
 
+  handleChange = (state: TldrawApp, reason: string | undefined): void => {
+    // console.log(state, reason);
+    if (reason?.startsWith('session:complete')) {
+      this.saveText(JSON.stringify(state.document));
+      console.log(reason);
+    }
+  };
+
   saveText = (text: string) => {
     this.saveNote(text);
-    this.setState({
-      text: text,
-    });
+
+    // State managed within TLDRAW App, only need to load state on start up
+    // this.setState({
+    //   text: text,
+    // });
   };
 
   saveNote = (text: string) => {
@@ -92,44 +104,32 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     keyMap.delete(e.key);
   };
 
+  getDocument = (text: string): TDDocument => {
+    console.log('Text: ', JSON.parse(text));
+    if (!text) {
+      return InitState.document;
+    }
+    return JSON.parse(text) as TDDocument;
+  };
+
   render() {
     const { text } = this.state;
     return (
       <div
         className={
-          HtmlElementId.snComponent + (this.state.printUrl ? ' print-url' : '')
+          HtmlElementId.snComponent +
+          (this.state.printUrl ? ' print-url' : '') +
+          ' tldraw'
         }
         id={HtmlElementId.snComponent}
         tabIndex={0}
       >
-        <p>
-          Edit <code>src/components/Editor.tsx</code> and save to reload.
-        </p>
-        <p>
-          Visit the{' '}
-          <a
-            href="https://docs.standardnotes.org/extensions/intro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Standard Notes documentation
-          </a>{' '}
-          to learn how to work with the Standard Notes API or{' '}
-          <a
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          .
-        </p>
-        <textarea
+        {/* <textarea
           id={HtmlElementId.textarea}
           name="text"
           className={'sk-input contrast textarea'}
           placeholder="Type here. Text in this textarea is automatically saved in Standard Notes"
-          rows={15}
+          rows={10}
           spellCheck="true"
           value={text}
           onBlur={this.onBlur}
@@ -137,6 +137,18 @@ export default class Editor extends React.Component<{}, EditorInterface> {
           onFocus={this.onFocus}
           onKeyDown={this.onKeyDown}
           onKeyUp={this.onKeyUp}
+        /> */}
+        <Tldraw
+          showUI={true}
+          showMenu={true}
+          showPages={false}
+          showStyles={true}
+          showTools={true}
+          showZoom={true}
+          darkMode={true}
+          onChange={this.handleChange}
+          // document={JSON.parse(text)}
+          document={this.getDocument(text)}
         />
       </div>
     );
