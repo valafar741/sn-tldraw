@@ -64,12 +64,16 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     // [Resolved] Bug here: Text on sticky notes not saved if
     // you move away from the note / page, unless
     // session:complete is fired by some other action
+    if (!reason) return;
 
-    const triggerSaveCommands = ['session:complete', 'updated_shapes'];
+    const triggerSaveCommands = ['updated_shapes'];
 
-    if (reason && triggerSaveCommands.includes(reason)) {
+    if (
+      reason.startsWith('session:complete') ||
+      triggerSaveCommands.includes(reason)
+    ) {
       this.saveText(JSON.stringify(state.document));
-      // console.log(reason);
+      // console.log('Saved: ' + reason);
     }
   };
 

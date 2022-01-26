@@ -1,6 +1,6 @@
 {
   "name": "sn-tldraw",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Editor leveraging tldraw build with React and TypeScript",
   "keywords": [
     "Standard Notes",
