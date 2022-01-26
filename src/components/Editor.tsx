@@ -68,7 +68,7 @@ export default class Editor extends React.Component<{}, EditorInterface> {
     const triggerSaveCommands = ['session:complete', 'updated_shapes'];
 
     if (reason && triggerSaveCommands.includes(reason)) {
-      this.saveText(TLDrawContentDescription + JSON.stringify(state.document));
+      this.saveText(JSON.stringify(state.document));
       // console.log(reason);
     }
   };
@@ -118,10 +118,6 @@ export default class Editor extends React.Component<{}, EditorInterface> {
 
     let document: TDDocument = InitState.document;
     try {
-      /** Strip description from text on initial load */
-      // if (text.includes(TLDrawContentDescription)) {
-      text = text.substring(text.indexOf('{'));
-      // }
       document = JSON.parse(text);
     } catch {
       document = InitState.document;
